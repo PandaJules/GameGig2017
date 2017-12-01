@@ -6,7 +6,7 @@ First get LÖVE:
 
 # Installation Instructions
 
-You can install LÖVE by downloading it from the [LÖVE homepage](https://love2d.org/) or by following the instructions below for this workshop. Assets are found [here](#asset-links).
+You can install LÖVE by downloading it from the [LÖVE homepage](https://love2d.org/) or by following the instructions below.
 
 ## Windows
 
