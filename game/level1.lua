@@ -15,6 +15,7 @@ function level1_load_images()
 	images.car = love.graphics.newImage("assets/images/car_up.png")
 	images.truck = love.graphics.newImage("assets/images/truck_down.png")
 	images.tree = love.graphics.newImage("assets/images/trees.png")
+	images.stone = love.graphics.newImage("assets/images/stone.png")
 	images.water = love.graphics.newImage("assets/images/water.png")
 
 	return images

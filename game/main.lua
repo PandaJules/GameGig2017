@@ -206,8 +206,8 @@ function love.draw()
 		draw_background()
 		draw_river()
 		draw_treeLine()
-		draw_player() 
 		love.graphics.draw(images.goal, goal.x, goal.y)
+		draw_player() 
 		draw_lanes()
 
 		love.graphics.setFont(fonts.large)
@@ -227,7 +227,19 @@ function draw_background()
 		for y=0, SCREEN_HEIGHT, 128 do
 			love.graphics.draw(images.road, x, y)
 		end
-	end 
+	end
+
+	for x=laneSpacing*8, laneSpacing*10, 64 do
+		for y=0, SCREEN_HEIGHT, 64 do
+			love.graphics.draw(images.stone, x, y)
+		end
+	end
+
+	for x=0, laneSpacing+64, 64 do
+		for y=goal.y+64, goal.y+128, 64 do
+			love.graphics.draw(images.stone, x, y)
+		end
+	end  
 end
 
 function draw_player(level)
