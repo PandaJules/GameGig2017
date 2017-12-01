@@ -11,19 +11,9 @@ laneSpacing = love.graphics.getWidth()/8
 function love.load()
 	math.randomseed(os.time())
 
-	player = {}
-	player.x = SCREEN_WIDTH - 150
-	player.y = SCREEN_HEIGHT/2 - 64
-	player.w = 128
-	player.h = 128
-
-	coins = {}
+	player = {x = SCREEN_WIDTH - 150, y = SCREEN_HEIGHT/2 - 64, w = 128, h = 128}
 	
-	goal = {}
-	goal.x = 50
-	goal.y = SCREEN_HEIGHT/2
-	goal.w = 60
-	goal.h = 60
+	goal = {x = 50, y = SCREEN_HEIGHT/2, w = 60, h = 60}
 	lives = 5
 
 	sounds = {}
@@ -50,6 +40,7 @@ function love.load()
 	lane4.obstacles = {}
 	lane5 = {timerMax = 4, timer = 0, speed = 75, x = laneSpacing*6}
 	lane5.obstacles = {}
+	lanes = {lane1, lane2, lane3, lane4, lane5}
 
 	-- river properties
 	river = { w = 80, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*4}
@@ -88,6 +79,9 @@ function move_player(dt)
 		reset_player_position()
 	end
 
+
+	
+
 end
 
 function reset_player_position()
@@ -96,46 +90,15 @@ function reset_player_position()
 end
 
 function update_lanes(dt)
-	lane1.timer = lane1.timer - (1*dt)
-	lane2.timer = lane2.timer - (1*dt)
-	lane3.timer = lane3.timer - (1*dt)
-	lane4.timer = lane4.timer - (1*dt)
-	lane5.timer = lane5.timer - (1*dt)
-
-	addnew = false
-	if lane1.timer < 0 then
-		addnew = true
-		lane1.timer = lane1.timerMax
+	for lane in lanes
+		lane.time = lane.timer - dt
+		addnew = false
+		if lane.timer < 0 then
+			addnew = true
+			lane.timer = lane.timerMax
+		end
+		update_lane(dt, lane, addnew)
 	end
-	update_lane(dt, lane1, addnew)
-
-	addnew = false
-	if lane2.timer < 0 then
-		addnew = true
-		lane2.timer = lane2.timerMax
-	end
-	update_lane(dt, lane2, addnew)
-
-	addnew = false
-	if lane3.timer < 0 then
-		addnew = true
-		lane3.timer = lane3.timerMax
-	end
-	update_lane(dt, lane3, addnew)
-
-	addnew = false
-	if lane4.timer < 0 then
-		addnew = true
-		lane4.timer = lane4.timerMax
-	end
-	update_lane(dt, lane4, addnew)
-
-	addnew = false
-	if lane5.timer < 0 then
-		addnew = true
-		lane5.timer = lane5.timerMax
-	end
-	update_lane(dt, lane5, addnew)
 end
 
 function collide_river()
@@ -177,11 +140,9 @@ function draw_player()
 end
 
 function draw_lanes()
-	draw_lane(lane1)
-	draw_lane(lane2)
-	draw_lane(lane3)
-	draw_lane(lane4)
-	draw_lane(lane5)
+	for lane in lanes
+		draw_lane(lane)
+	end
 end
 
 function draw_river()
