@@ -4,8 +4,7 @@ SCREEN_HEIGHT = love.graphics.getHeight()
 function level4_load_images()
 	images = {}
 	images.background = love.graphics.newImage("assets/images/ground.png")
-	-- change to bed
-	images.goal = love.graphics.newImage("assets/images/CL.png")
+	images.goal = love.graphics.newImage("assets/images/bed.png")
 	images.background = love.graphics.newImage("assets/images/green_ground.png")
 	images.road = love.graphics.newImage("assets/images/road.png")
 	images.player_right = love.graphics.newImage("assets/images/bikeman_light_right.png")
