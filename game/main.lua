@@ -48,6 +48,8 @@ function love.load()
 	goal = {}
 	goal.x = 50
 	goal.y = SCREEN_HEIGHT/2
+	goal.w = 60
+	goal.h = 60
 	lives = 5
 
 	sounds = {}
@@ -99,22 +101,16 @@ function move_player(dt)
 	end 
 
 
-	-- if AABB(player.x, player.y, player.w, player.h, coin.x, coin.y, ) then
-	-- 		table.remove(coins, i)
-	-- 		score = score +1 
-	-- 		sounds.coin:play()
-	-- 	end
-	-- end
+	if AABB(player.x, player.y, player.w, player.h, goal.x, goal.y, goal.w/2, goal.h/2) then
+		love.window.showMessageBox("Succes", "You've reached the goal!", "info")
+		reset_player_position()
+	end
 
+end
 
-	-- if math.random()<0.02 then
-	-- 	local coin
-	-- 	coin = {}
-	-- 	coin.r = 25
-	-- 	coin.x = math.random(0, 800-2 * coin.r)
-	-- 	coin.y = math.random(0, 600-2 * coin.r)
-	-- 	table.insert(coins, coin)
-	-- end	
+function reset_player_position()
+	player.x = SCREEN_WIDTH - 150
+	player.y = SCREEN_HEIGHT/2 - 64
 end
 
 function update_lanes(dt)
