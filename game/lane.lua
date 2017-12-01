@@ -18,7 +18,9 @@ function update_lane(dt, lane, addnew)
 	for i, thing in ipairs(lane.obstacles) do
 		thing.y = thing.y + (lane.speed * dt)
 
-		if thing.y < 0 then
+		if thing.y < -300 then
+			table.remove(lane.obstacles, i)
+		elseif thing.y > love.graphics.getHeight() then
 			table.remove(lane.obstacles, i)
 		end
 	end
