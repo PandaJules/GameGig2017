@@ -13,15 +13,16 @@ LEVEL = 1 -- the level we're on
 levelLoaded = false
 
 
+
 function love.load()
 	math.randomseed(os.time())
-	hit_time = 10000
+	hit_time = 1000
 	invincible = false
 
-	player = {x = SCREEN_WIDTH - 150, y = SCREEN_HEIGHT/2 - 64, w = 128, h = 128}
+	player = {x = SCREEN_WIDTH - 150, y = SCREEN_HEIGHT/2 - 64, w = 125, h = 125}
 	
-	goal = {x = 10, y = SCREEN_HEIGHT/2, w = 60, h = 60}
-	lives = 5
+	goal = {x = 50, y = SCREEN_HEIGHT/2, w = 60, h = 60}
+	lives = 10
 
 	sounds = {}
 	sounds.coin = love.audio.newSource("assets/sounds/coin.ogg", "static")
@@ -32,14 +33,14 @@ function love.load()
 	fonts.large = love.graphics.newFont("assets/fonts/Gamer.ttf", 80)
 
 	-- river properties
-	river = { w = 100, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*5}
+	river = { w = 120, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*5}
 
 	-- bridge properties
-	bridge = { w = 100, h = 150, y = SCREEN_HEIGHT/4, x = laneSpacing*5}
+	bridge = { w = 120, h = 150, y = SCREEN_HEIGHT/6, x = laneSpacing*5}
 
 	-- treeLine properties
-	treeLine1 = { w = 100, h = 3*SCREEN_HEIGHT/4 - 100, y = 0, x = laneSpacing*3}
-	treeLine2 = { w = 100, h = SCREEN_HEIGHT/4 , y = 3*SCREEN_HEIGHT/4 + 100, x = laneSpacing*3}
+	treeLine1 = { w = 128, h = 128*4, y = 0, x = laneSpacing*3}
+	treeLine2 = { w = 128, h = 128 , y = SCREEN_HEIGHT-128, x = laneSpacing*3}
 	treeLines = {treeLine1, treeLine2}
 end
 
@@ -142,22 +143,16 @@ function check_collision()
 	for i, treeLine in ipairs(treeLines) do
 		if AABB(player.x, player.y, player.w, player.h, treeLine.x, treeLine.y, treeLine.w, treeLine.h) then
 			-- are we closer to the left or the right
-			local xdifference = (treeLine.x + treeLine.w) - player.x
-			debug = xdifference
-			if xdifference < 20 then
+			if player.x < treeLine.x + treeLine.w then
 				-- closer to the right
 				player.x = treeLine.x + treeLine.w
-			elseif xdifference > 150 then
+			elseif player.x > treeLine.x - player.w then
 				-- closer to the left
 				player.x = treeLine.x - player.w
-			end
-
-			local ydifference = player.y - (treeLine.y + treeLine.h)
-			debug = ydifference
-			if ydifference > -30 then
+			elseif player.y < treeLine.y + treeLine.h then
 				-- closer to the bottom
 				player.y = treeLine.y + treeLine.h
-			elseif ydifference < -260 then
+			elseif player.y + player.h > treeLine.y then
 				-- closer to the top
 				player.y = treeLine.y - player.h
 			end
@@ -180,7 +175,6 @@ function love.draw()
 
 	love.graphics.setFont(fonts.large)
 	love.graphics.print("LIVES: " .. lives, 10, 10)
-	-- love.graphics.print("DEBUG: " .. debug, 10, 30)
 end
 
 function draw_background()
@@ -189,6 +183,12 @@ function draw_background()
 			love.graphics.draw(images.background, x, y)
 		end
 	end
+
+	for x=128, 256, 128 do
+		for y=0, SCREEN_HEIGHT, 128 do
+			love.graphics.draw(images.road, x, y)
+		end
+	end 
 end
 
 function draw_player()
@@ -201,7 +201,7 @@ function draw_player()
 			img = images.player_left
 	end
 
-	if hit_time > 0.6 or math.cos(2*math.pi*6*love.timer.getTime())>0 then
+	if hit_time > 1 or math.cos(2*math.pi*6*love.timer.getTime())>0 then
 		love.graphics.draw(img, player.x, player.y)
 	end
 end
@@ -221,8 +221,10 @@ function draw_river()
 end
 
 function draw_treeLine()
-	love.graphics.setColor(0, 100, 0)
-	love.graphics.rectangle("fill", treeLine1.x, treeLine1.y, treeLine1.w, treeLine1.h)
-	love.graphics.rectangle("fill", treeLine2.x, treeLine2.y, treeLine2.w, treeLine2.h)
+	love.graphics.setColor(255, 255, 255)
+	for y=0, SCREEN_HEIGHT/2, images.tree:getHeight() do
+		love.graphics.draw(images.tree, laneSpacing*3, y)
+	end
+	love.graphics.draw(images.tree, laneSpacing*3, SCREEN_HEIGHT-128)
 	love.graphics.setColor(255, 255, 255)
 end
