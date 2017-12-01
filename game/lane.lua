@@ -26,6 +26,7 @@ end
 
 function draw_lane(lane)
 	for i, thing in ipairs(lane.obstacles) do
-		love.graphics.rectangle("fill", thing.x, thing.y, thing.w, thing.h)
+		-- love.graphics.rectangle("fill", thing.x, thing.y, thing.w, thing.h)
+		love.graphics.draw(lane.image, thing.x, thing.y)
 	end
 end
