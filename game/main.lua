@@ -32,24 +32,24 @@ function love.load()
 
 end
 
-SPEED = 500
 
 function love.update(dt)
-	move(dt)
+	move_player(dt)
 end
 
-function move(dt)
+function move_player(dt)
+	local SPEED = 500
 	if love.keyboard.isDown("right") then 
-		player.x = player.x + 10
+		player.x = math.min(love.graphics.getWidth()-images.player_down:getWidth(), player.x + dt * SPEED)
 		player.direction = "right"
 	elseif love.keyboard.isDown("left") then
-		player.x = player.x - 10
+		player.x = math.max(0, player.x - dt * SPEED)
 		player.direction = "left"
 	elseif love.keyboard.isDown("up") then
-		player.y = player.y - dt * SPEED
+		player.y = math.max(0, player.y - dt * SPEED)
 		player.direction = "up"
 	elseif love.keyboard.isDown("down") then
-		player.y = player.y + dt * SPEED
+		player.y = math.min(love.graphics.getHeight()-images.player_down:getWidth(), player.y + dt * SPEED)
 		player.direction = "down"
 	end 
 
