@@ -139,9 +139,19 @@ function update_lanes(dt)
 end
 
 function collide_river()
-	-- if player.x > river1.x and (player.x - player.w) < river1.x + river1.w then
-
-	-- end
+	if AABB(player.x, player.y, player.w, player.h, bridge.x, bridge.y, bridge.w, bridge.h) then
+		-- stop the player from falling off of the bridge
+		if player.y < bridge.y then
+			player.y = bridge.y
+		elseif (player.y + player.h) > (bridge.y + bridge.h) then
+			player.y = bridge.y + bridge.h - player.h
+		else
+			player.y = player.y
+		end
+	elseif AABB(player.x, player.y, player.w, player.h, river.x, river.y, river.w, river.h) then
+	    -- the player has fallen into the river
+	    reset_player_position()
+	end
 end
 
 function love.draw()
