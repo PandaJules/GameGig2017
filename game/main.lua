@@ -10,10 +10,12 @@ laneSpacing = love.graphics.getWidth()/9
 
 function love.load()
 	math.randomseed(os.time())
+	hit_time = 10000
+	invincible = false
 
 	player = {x = SCREEN_WIDTH - 150, y = SCREEN_HEIGHT/2 - 64, w = 128, h = 128}
 	
-	goal = {x = 50, y = SCREEN_HEIGHT/2, w = 60, h = 60}
+	goal = {x = 10, y = SCREEN_HEIGHT/2, w = 60, h = 60}
 	lives = 5
 
 	sounds = {}
@@ -25,20 +27,27 @@ function love.load()
 
 	images = {}
 	images.background = love.graphics.newImage("assets/images/ground.png")
-	images.goal = love.graphics.newImage("assets/images/coin.png")
+	images.goal = love.graphics.newImage("assets/images/CL.png")
+	images.background = love.graphics.newImage("assets/images/brown_ground.png")
+	images.road = love.graphics.newImage("assets/images/road.png")
 	images.player_right = love.graphics.newImage("assets/images/bikeman_right.png")
 	images.player_left = love.graphics.newImage("assets/images/bikeman_left.png")
+	images.tourist = love.graphics.newImage("assets/images/tourist.png")
+	images.duck = love.graphics.newImage("assets/images/duck.png")
+	images.cow = love.graphics.newImage("assets/images/cow_down.png")
+	images.car = love.graphics.newImage("assets/images/car_up.png")
+	images.truck = love.graphics.newImage("assets/images/truck_down.png")
 
 	-- empty lanes
-	lane1 = {timerMax = 2, timer = 0, speed = 300, x = laneSpacing}
+	lane1 = {timerMax = 2, timer = 0, speed = 300, x = laneSpacing, image = images.truck}
 	lane1.obstacles = {}
-	lane2 = {timerMax = 3, timer = 0, speed = -300, x = laneSpacing*2}
+	lane2 = {timerMax = 3, timer = 0, speed = -300, x = laneSpacing*2, image = images.car}
 	lane2.obstacles = {}
-	lane3 = {timerMax = 4, timer = 0, speed = 100, x = laneSpacing*4}
+	lane3 = {timerMax = 4, timer = 0, speed = 100, x = laneSpacing*4, image = images.cow}
 	lane3.obstacles = {}
-	lane4 = {timerMax = 5, timer = 0, speed = -50, x = laneSpacing*6}
+	lane4 = {timerMax = 5, timer = 0, speed = -50, x = laneSpacing*6, image = images.duck}
 	lane4.obstacles = {}
-	lane5 = {timerMax = 4, timer = 0, speed = 75, x = laneSpacing*7}
+	lane5 = {timerMax = 4, timer = 0, speed = 75, x = laneSpacing*7, image = images.tourist}
 	lane5.obstacles = {}
 	lanes = {lane1, lane2, lane3, lane4, lane5}
 
@@ -58,8 +67,8 @@ end
 function love.update(dt)
 	move_player(dt)
 	update_lanes(dt)
-	collide_river(dt)
-	collide_treeLine(dt)
+	check_collision(dt)
+	hit_time = hit_time + dt
 end
 
 function move_player(dt)
@@ -78,14 +87,6 @@ function move_player(dt)
 		player.y = math.min(SCREEN_HEIGHT-images.player_left:getWidth(), player.y + dt * VERTICAL_SPEED)
 		player.direction = "down"
 	end 
-
-
-	if AABB(player.x, player.y, player.w, player.h, goal.x, goal.y, goal.w/2, goal.h/2) then
-		love.window.showMessageBox("Succes", "You've reached the goal!", "info")
-		reset_player_position()
-	end
-
-
 	
 
 end
@@ -107,7 +108,7 @@ function update_lanes(dt)
 	end
 end
 
-function collide_river(dt)
+function check_collision()
 	if AABB(player.x, player.y, player.w, player.h, bridge.x, bridge.y, bridge.w, bridge.h) then
 		-- stop the player from falling off of the bridge
 		if player.y < bridge.y then
@@ -118,10 +119,28 @@ function collide_river(dt)
 	elseif AABB(player.x, player.y, player.w, player.h, river.x, river.y, river.w, river.h) then
 	    -- the player has fallen into the river
 	    reset_player_position()
+	    lives = lives - 1
+	elseif AABB(player.x, player.y, player.w, player.h, goal.x, goal.y, goal.w/2, goal.h/2) then
+		-- the player has reached the goal
+		love.window.showMessageBox("Succes", "You've reached the goal!", "info")
+		reset_player_position()
 	end
-end
+	
+	for i, lane in ipairs(lanes) do
+		for j, thing in ipairs(lane.obstacles) do 
+			if AABB(player.x, player.y, player.w, player.h, thing.x, thing.y, thing.w, thing.h) and invincible == false then
+				hit_time = 0
+				invincible = true
+				if lives>0 then 
+					lives = lives - 1
+				else 
+					love.window.showMessageBox("FAILURE", "You died! Watch the traffic in your next line", "info")
+				end
+			end
+		end
+	end
 
-function collide_treeLine(dt)
+
 	for i, treeLine in ipairs(treeLines) do
 		if AABB(player.x, player.y, player.w, player.h, treeLine.x, treeLine.y, treeLine.w, treeLine.h) then
 			-- are we closer to the left or the right
@@ -146,7 +165,12 @@ function collide_treeLine(dt)
 			end
 		end
 	end
+
+
+	invincible = hit_time<1
+
 end
+
 
 function love.draw()
 	draw_background()
@@ -179,7 +203,9 @@ function draw_player()
 			img = images.player_left
 	end
 
-	love.graphics.draw(img, player.x, player.y)
+	if hit_time > 0.6 or math.cos(2*math.pi*6*love.timer.getTime())>0 then
+		love.graphics.draw(img, player.x, player.y)
+	end
 end
 
 function draw_lanes()
