@@ -3,6 +3,7 @@ require "lane"
 require "level1"
 require "level2"
 require "level3"
+require "level4"
 
 -- GLOBALS --
 
@@ -32,11 +33,11 @@ function love.load()
 	fonts.large = love.graphics.newFont("assets/fonts/Gamer.ttf", 90)
 	fonts.huge = love.graphics.newFont("assets/fonts/Gamer.ttf", 160)
 
-	river = { w = 120, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*6}
+	river = { w = 100, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*6}
 	bridge = { w = 125, h = 150, y = SCREEN_HEIGHT/6, x = laneSpacing*6}
 
-	treeLine1 = { w = 128, h = 128*4, y = 0, x = laneSpacing*4}
-	treeLine2 = { w = 128, h = 128 , y = SCREEN_HEIGHT-128, x = laneSpacing*4}
+	treeLine1 = { w = 128, h = 500, y = 0, x = laneSpacing*4}
+	treeLine2 = { w = 128, h = 125 , y = SCREEN_HEIGHT-125, x = laneSpacing*4}
 	treeLines = {treeLine1, treeLine2}
 end
 
@@ -57,6 +58,11 @@ function love.update(dt)
 			images = level3_load_images()
 			lanes = level3_load_lanes()
 			level3_load_player_goal()
+			levelLoaded = true
+		elseif LEVEL == 4 then
+			images = level4_load_images()
+			lanes = level4_load_lanes()
+			level4_load_player_goal()
 			levelLoaded = true
 		end
 	end
@@ -129,7 +135,7 @@ function check_collision()
 	    if lives>0 then 
 			lives = lives - 1
 		else 
-			love.window.showMessageBox("FAILURE", "You died! Watch the traffic in your next line", "info")
+			love.window.showMessageBox("FAILURE", "You died! Watch the traffic in your next life", "info")
 			lives = 5
 			reset_player_position(LEVEL)
 		end
@@ -137,16 +143,25 @@ function check_collision()
 
 
 	if AABB(player.x, player.y, player.w, player.h, goal.x, goal.y, goal.w/2, goal.h/2) then
-		-- the player has reached the goal
-		-- progress to the next level
+		-- the player has reached the goal, progress to the next level
 		if LEVEL == 1 then
-			love.window.showMessageBox("Succes", "You've reached the CL!", "info")
+			love.window.showMessageBox("Success", "You've reached the CL!", "info")
 			LEVEL = 2
 			levelLoaded = false
 			lives = 5
 		elseif LEVEL == 2 then
-			love.window.showMessageBox("Succes", "You've have submitted your supervision!", "info")
+			love.window.showMessageBox("Success", "You've have submitted your supervision!", "info")
 			LEVEL = 3
+			levelLoaded = false
+			lives = 5
+		elseif LEVEL == 3 then
+			love.window.showMessageBox("Success", "You are now on the way home!", "info")
+			LEVEL = 4
+			levelLoaded = false
+			lives = 5
+		elseif LEVEL == 4 then
+			love.window.showMessageBox("Success", "You can now take a nap! Or play another game :) ", "info")
+			LEVEL = 0
 			levelLoaded = false
 			lives = 5
 		end
@@ -160,7 +175,7 @@ function check_collision()
 				if lives>0 then 
 					lives = lives - 1
 				else 
-					love.window.showMessageBox("FAILURE", "You died! Watch the traffic in your next line", "info")
+					love.window.showMessageBox("FAILURE", "You died! Watch the traffic in your next life", "info")
 					lives = 5
 					reset_player_position(LEVEL)
 				end
@@ -203,6 +218,9 @@ function love.draw()
 			love.graphics.print("hit SPACE to start", 100, SCREEN_HEIGHT/2)
 		end
 	elseif levelLoaded then
+		if LEVEL == 4 then
+			love.graphics.setColor(50, 50, 50)
+		end
 		draw_background()
 		draw_river()
 		draw_treeLine()
@@ -255,6 +273,12 @@ function draw_player(level)
 			img = images.player_right
 	elseif player.direction == "left" then
 			img = images.player_left
+	elseif player.direction == "up" or player.direction == "down" then
+			if LEVEL == 1 or LEVEL == 3 then 
+				img = images.player_left
+			elseif LEVEL == 2 or LEVEL == 4 then 
+				img = images.player_right
+			end
 	end
 
 	if hit_time > 1 or math.cos(2*math.pi*6*love.timer.getTime())>0 then
@@ -272,21 +296,21 @@ function draw_river()
 	for y=0, SCREEN_HEIGHT, images.tree:getHeight() do
 		love.graphics.draw(images.water, laneSpacing*6, y)
 	end
-	if LEVEL == 1 then
+	if LEVEL == 1 or LEVEL == 4 then
 		love.graphics.setColor(150, 100, 50)
-	elseif LEVEL == 2 then
+	elseif LEVEL == 2 or LEVEL == 3 then
 		love.graphics.setColor(130, 155, 157)
 	end
-		love.graphics.rectangle("fill", bridge.x, bridge.y, 128, bridge.h)
+	love.graphics.rectangle("fill", bridge.x, bridge.y, 128, bridge.h)
 	love.graphics.setColor(255, 255, 255)
 end
 
 function draw_treeLine()
 	love.graphics.setColor(255, 255, 255)
-	for y=0, SCREEN_HEIGHT/2, images.tree:getHeight() do
+	for y=0, SCREEN_HEIGHT, images.tree:getHeight() do
 		love.graphics.draw(images.tree, laneSpacing*4, y)
 	end
 	love.graphics.draw(love.graphics.newImage("assets/images/brown_ground.png"), laneSpacing*4, SCREEN_HEIGHT-256)
-	love.graphics.draw(images.tree, laneSpacing*4, SCREEN_HEIGHT-128)
+	love.graphics.draw(images.tree, laneSpacing*4, SCREEN_HEIGHT-images.tree:getHeight())
 	love.graphics.setColor(255, 255, 255)
 end
