@@ -13,7 +13,7 @@ function love.load()
 
 	player = {x = SCREEN_WIDTH - 150, y = SCREEN_HEIGHT/2 - 64, w = 128, h = 128}
 	
-	goal = {x = 50, y = SCREEN_HEIGHT/2, w = 60, h = 60}
+	goal = {x = 10, y = SCREEN_HEIGHT/2, w = 60, h = 60}
 	lives = 5
 
 	sounds = {}
@@ -25,7 +25,7 @@ function love.load()
 
 	images = {}
 	images.background = love.graphics.newImage("assets/images/ground.png")
-	images.goal = love.graphics.newImage("assets/images/coin.png")
+	images.goal = love.graphics.newImage("assets/images/CL.png")
 	images.player_right = love.graphics.newImage("assets/images/bikeman_right.png")
 	images.player_left = love.graphics.newImage("assets/images/bikeman_left.png")
 	images.tourist = love.graphics.newImage("assets/images/tourist.png")
