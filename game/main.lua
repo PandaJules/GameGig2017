@@ -9,7 +9,7 @@ SCREEN_WIDTH = love.graphics.getWidth()
 SCREEN_HEIGHT = love.graphics.getHeight()
 laneSpacing = love.graphics.getWidth()/10
 
-LEVEL = 1 -- the level we're on
+LEVEL = 0 -- the level we're on
 levelLoaded = false
 
 
@@ -29,6 +29,7 @@ function love.load()
 
 	fonts = {}
 	fonts.large = love.graphics.newFont("assets/fonts/Gamer.ttf", 90)
+	fonts.huge = love.graphics.newFont("assets/fonts/Gamer.ttf", 160)
 
 	river = { w = 125, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*6}
 	bridge = { w = 125, h = 150, y = SCREEN_HEIGHT/6, x = laneSpacing*6}
@@ -45,18 +46,25 @@ function love.update(dt)
 			images = level1_load_images()
 			lanes = level1_load_lanes()
 			level1_load_player_goal()
+			levelLoaded = true
 		elseif LEVEL == 2 then
 			images = level2_load_images()
 			lanes = level2_load_lanes()
 			level2_load_player_goal()
+			levelLoaded = true
 		end
-		levelLoaded = true
 	end
 
-	move_player(dt)
-	update_lanes(dt)
-	check_collision(dt)
-	hit_time = hit_time + dt
+	if LEVEL > 0 then
+		move_player(dt)
+		update_lanes(dt)
+		check_collision(dt)
+		hit_time = hit_time + dt
+	else
+		if love.keyboard.isDown("space") then
+			LEVEL = 1
+		end
+	end
 end
 
 function move_player(dt)
@@ -109,7 +117,7 @@ function check_collision()
 		elseif (player.y + player.h) > (bridge.y + bridge.h) then
 			player.y = bridge.y + bridge.h - player.h
 		end
-	elseif AABB(player.x, player.y, player.w, player.h, river.x, river.y, river.w, river.h) then
+	elseif AABB(player.x, player.y, player.w, player.h, river.x, river.y, river.w-50, river.h) then
 	    -- the player has fallen into the river
 	    reset_player_position(LEVEL)
 	    if lives>0 then 
@@ -178,24 +186,34 @@ end
 
 
 function love.draw()
-	draw_background()
-	draw_river()
-	draw_treeLine()
-	draw_player(LEVEL) 
-	love.graphics.draw(images.goal, goal.x, goal.y)
-	draw_lanes()
+	if LEVEL == 0 then
+		love.graphics.setFont(fonts.huge)
+		love.graphics.print("RETRO-BRIDGE", 100, SCREEN_HEIGHT/2 - 100)
+		love.graphics.setFont(fonts.large)
+		if math.cos(2*math.pi*love.timer.getTime())>0 then
+			love.graphics.print("hit SPACE to start", 100, SCREEN_HEIGHT/2)
+		end
+	elseif levelLoaded then
+		draw_background()
+		draw_river()
+		draw_treeLine()
+		draw_player() 
+		love.graphics.draw(images.goal, goal.x, goal.y)
+		draw_lanes()
 
-	love.graphics.setFont(fonts.large)
-	love.graphics.print("LIVES: " .. lives, 10, 10)
+		love.graphics.setFont(fonts.large)
+		love.graphics.print("LIVES: " .. lives, 10, 10)
+	end
 end
 
 function draw_background()
+	-- love.graphics.setColor(139, 181, 74)
 	for x=0, SCREEN_WIDTH, images.background:getWidth() do
 		for y=0, SCREEN_HEIGHT, images.background:getHeight() do
 			love.graphics.draw(images.background, x, y)
 		end
 	end
-
+	
 	for x=laneSpacing*2, laneSpacing*3, 128 do
 		for y=0, SCREEN_HEIGHT, 128 do
 			love.graphics.draw(images.road, x, y)

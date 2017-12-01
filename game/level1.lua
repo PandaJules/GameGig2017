@@ -5,7 +5,7 @@ function level1_load_images()
 	images = {}
 	images.background = love.graphics.newImage("assets/images/ground.png")
 	images.goal = love.graphics.newImage("assets/images/CL.png")
-	images.background = love.graphics.newImage("assets/images/brown_ground.png")
+	images.background = love.graphics.newImage("assets/images/green_ground.png")
 	images.road = love.graphics.newImage("assets/images/road.png")
 	images.player_right = love.graphics.newImage("assets/images/bikeman_right.png")
 	images.player_left = love.graphics.newImage("assets/images/bikeman_left.png")
