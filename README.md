@@ -6,7 +6,7 @@ First get LÖVE:
 
 # Installation Instructions
 
-You can install LÖVE by downloading it from the [LÖVE homepage](https://love2d.org/) or by following the instructions below for this workshop. Assets are found [here](#asset-links).
+You can install LÖVE by downloading it from the [LÖVE homepage](https://love2d.org/) or by following the instructions below.
 
 ## Windows
 
@@ -32,9 +32,7 @@ You will now be able to run LÖVE from the command line using `love`.
 
 For other Linux/GNU systems, please refer to the [LÖVE homepage](https://love2d.org/).
 
-# Creating a project
+# Playing this game
 
-To create a LÖVE project, just create a folder with a single file in it called `main.lua`.
-
-Drag this folder onto your LÖVE executable or run `love FOLDER_NAME` from the command line.
+To play this game, download it and drag the "game" folder onto your LÖVE executable or run `love game` from the command line.
 
