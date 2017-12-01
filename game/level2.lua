@@ -18,6 +18,9 @@ function level2_load_images()
 	images.stone = love.graphics.newImage("assets/images/stone.png")
 	images.water = love.graphics.newImage("assets/images/tables.png")
 
+	images.plant = love.graphics.newImage("assets/images/plant.png")
+	images.pool_table = love.graphics.newImage("assets/images/pool-table.png")
+
 	return images
 end
 

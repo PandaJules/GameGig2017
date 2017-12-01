@@ -303,10 +303,24 @@ end
 
 function draw_treeLine()
 	love.graphics.setColor(255, 255, 255)
-	for y=0, SCREEN_HEIGHT/2, images.tree:getHeight() do
-		love.graphics.draw(images.tree, laneSpacing*4, y)
+	if LEVEL == 1 or LEVEL == 4 then
+		for y=0, SCREEN_HEIGHT/2, images.tree:getHeight() do
+			love.graphics.draw(images.tree, laneSpacing*4, y)
+		end
+		love.graphics.draw(images.tree, laneSpacing*4, SCREEN_HEIGHT-128)
 	end
-	love.graphics.draw(love.graphics.newImage("assets/images/brown_ground.png"), laneSpacing*4, SCREEN_HEIGHT-256)
-	love.graphics.draw(images.tree, laneSpacing*4, SCREEN_HEIGHT-128)
+	if LEVEL == 2 or LEVEL == 3 then
+		love.graphics.draw(images.plant, laneSpacing*4, 0)
+		love.graphics.draw(images.pool_table, laneSpacing*4, 128)
+		love.graphics.draw(images.plant, laneSpacing*4, 128+256)
+		love.graphics.draw(images.plant, laneSpacing*4, SCREEN_HEIGHT-128)
+	end
+	if LEVEL == 1 or LEVEL == 4 then
+		love.graphics.draw(love.graphics.newImage("assets/images/brown_ground.png"), laneSpacing*4, SCREEN_HEIGHT-256)
+	elseif LEVEL == 2 or LEVEL == 3 then
+		love.graphics.draw(love.graphics.newImage("assets/images/stone.png"), laneSpacing*4, SCREEN_HEIGHT-256)
+	end
+
+
 	love.graphics.setColor(255, 255, 255)
 end
