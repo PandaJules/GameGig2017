@@ -261,7 +261,7 @@ function draw_background()
 		end
 	end
 	
-	if LEVEL == 1 then
+	if LEVEL == 1 or LEVEL == 4 then
 		for x=laneSpacing*2, laneSpacing*3, 128 do
 			for y=0, SCREEN_HEIGHT, 128 do
 				love.graphics.draw(images.road, x, y)
@@ -328,10 +328,10 @@ end
 function draw_treeLine()
 	love.graphics.setColor(255, 255, 255)
 	if LEVEL == 1 or LEVEL == 4 then
-		for y=0, SCREEN_HEIGHT/2, images.tree:getHeight() do
+		for y=0, SCREEN_HEIGHT, images.tree:getHeight() do
 			love.graphics.draw(images.tree, laneSpacing*4, y)
 		end
-		love.graphics.draw(images.tree, laneSpacing*4, SCREEN_HEIGHT-128)
+		-- love.graphics.draw(images.tree, laneSpacing*4, SCREEN_HEIGHT-128)
 	end
 	if LEVEL == 2 or LEVEL == 3 then
 		love.graphics.draw(images.plant, laneSpacing*4, 0)
