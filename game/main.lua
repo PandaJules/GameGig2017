@@ -20,6 +20,8 @@ function love.load()
 
 	sounds = {}
 	sounds.coin = love.audio.newSource("assets/sounds/coin.ogg", "static")
+	sounds.music = love.audio.newSource("assets/music/retro-bridge.wav", "static")
+	sounds.music:play()
 
 	fonts = {}
 	fonts.large = love.graphics.newFont("assets/fonts/Gamer.ttf", 80)
