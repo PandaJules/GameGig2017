@@ -207,6 +207,12 @@ function draw_background()
 		for y=0, SCREEN_HEIGHT, 128 do
 			love.graphics.draw(images.road, x, y)
 		end
+	end
+
+	for x=laneSpacing*7, laneSpacing*9, 64 do
+		for y=0, SCREEN_HEIGHT, 64 do
+			love.graphics.draw(images.stone, x, y)
+		end
 	end 
 end
 
