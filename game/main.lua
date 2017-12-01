@@ -7,7 +7,7 @@ require "level2"
 
 SCREEN_WIDTH = love.graphics.getWidth()
 SCREEN_HEIGHT = love.graphics.getHeight()
-laneSpacing = love.graphics.getWidth()/9
+laneSpacing = love.graphics.getWidth()/10
 
 LEVEL = 1 -- the level we're on
 levelLoaded = false
@@ -19,10 +19,8 @@ function love.load()
 	hit_time = 1000
 	invincible = false
 
-	player = {x = SCREEN_WIDTH - 150, y = SCREEN_HEIGHT/2 - 64, w = 125, h = 125}
-	
-	goal = {x = 50, y = SCREEN_HEIGHT/2, w = 60, h = 60}
-	lives = 10
+
+	lives = 5
 
 	sounds = {}
 	sounds.coin = love.audio.newSource("assets/sounds/coin.ogg", "static")
@@ -30,17 +28,13 @@ function love.load()
 	sounds.music:play()
 
 	fonts = {}
-	fonts.large = love.graphics.newFont("assets/fonts/Gamer.ttf", 80)
+	fonts.large = love.graphics.newFont("assets/fonts/Gamer.ttf", 90)
 
-	-- river properties
-	river = { w = 120, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*5}
+	river = { w = 125, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*6}
+	bridge = { w = 125, h = 150, y = SCREEN_HEIGHT/6, x = laneSpacing*6}
 
-	-- bridge properties
-	bridge = { w = 120, h = 150, y = SCREEN_HEIGHT/6, x = laneSpacing*5}
-
-	-- treeLine properties
-	treeLine1 = { w = 128, h = 128*4, y = 0, x = laneSpacing*3}
-	treeLine2 = { w = 128, h = 128 , y = SCREEN_HEIGHT-128, x = laneSpacing*3}
+	treeLine1 = { w = 128, h = 128*4, y = 0, x = laneSpacing*4}
+	treeLine2 = { w = 128, h = 128 , y = SCREEN_HEIGHT-128, x = laneSpacing*4}
 	treeLines = {treeLine1, treeLine2}
 end
 
@@ -50,9 +44,11 @@ function love.update(dt)
 		if LEVEL == 1 then
 			images = level1_load_images()
 			lanes = level1_load_lanes()
+			level1_load_player_goal()
 		elseif LEVEL == 2 then
 			images = level2_load_images()
 			lanes = level2_load_lanes()
+			level2_load_player_goal()
 		end
 		levelLoaded = true
 	end
@@ -83,9 +79,14 @@ function move_player(dt)
 
 end
 
-function reset_player_position()
-	player.x = SCREEN_WIDTH - 150
-	player.y = SCREEN_HEIGHT/2 - 64
+function reset_player_position(level)
+	if level == 1 then
+		player.x = SCREEN_WIDTH - 150
+		player.y = SCREEN_HEIGHT/2 - 64
+	elseif level ==2 then 
+		player.x = 10
+		player.y = SCREEN_HEIGHT/2-64
+	end
 end
 
 function update_lanes(dt)
@@ -110,18 +111,27 @@ function check_collision()
 		end
 	elseif AABB(player.x, player.y, player.w, player.h, river.x, river.y, river.w, river.h) then
 	    -- the player has fallen into the river
-	    reset_player_position()
-	    lives = lives - 1
-	elseif AABB(player.x, player.y, player.w, player.h, goal.x, goal.y, goal.w/2, goal.h/2) then
+	    reset_player_position(LEVEL)
+	    if lives>0 then 
+			lives = lives - 1
+		else 
+			love.window.showMessageBox("FAILURE", "You died! Watch the traffic in your next line", "info")
+			lives = 5
+			reset_player_position(LEVEL)
+		end
+	end
+
+
+	if AABB(player.x, player.y, player.w, player.h, goal.x, goal.y, goal.w/2, goal.h/2) then
 		-- the player has reached the goal
-		love.window.showMessageBox("Succes", "You've reached the goal!", "info")
-		reset_player_position()
-		
+		love.window.showMessageBox("Succes", "You've reached the CL!", "info")		
 		-- progress to the next level
 		if LEVEL == 1 then
 			LEVEL = 2
 			levelLoaded = false
 			lives = 5
+		else
+			love.window.showMessageBox("Succes", "You've have submitted your supervision!", "info")
 		end
 	end
 	
@@ -134,6 +144,8 @@ function check_collision()
 					lives = lives - 1
 				else 
 					love.window.showMessageBox("FAILURE", "You died! Watch the traffic in your next line", "info")
+					lives = 5
+					reset_player_position(LEVEL)
 				end
 			end
 		end
@@ -169,7 +181,7 @@ function love.draw()
 	draw_background()
 	draw_river()
 	draw_treeLine()
-	draw_player() 
+	draw_player(LEVEL) 
 	love.graphics.draw(images.goal, goal.x, goal.y)
 	draw_lanes()
 
@@ -184,20 +196,23 @@ function draw_background()
 		end
 	end
 
-	for x=128, 256, 128 do
+	for x=laneSpacing*2, laneSpacing*3, 128 do
 		for y=0, SCREEN_HEIGHT, 128 do
 			love.graphics.draw(images.road, x, y)
 		end
 	end 
 end
 
-function draw_player()
-	local img = images.player_down
+function draw_player(level)
+	local img = images.player_left
+	if level == 1 then 
+		img = images.player_left
+	elseif level == 2 then
+		img = images.player_right
+	end
 	if player.direction == "right" then
 			img = images.player_right
 	elseif player.direction == "left" then
-			img = images.player_left
-	else
 			img = images.player_left
 	end
 
@@ -213,18 +228,19 @@ function draw_lanes()
 end
 
 function draw_river()
-	love.graphics.setColor(30, 120, 180)
-	love.graphics.rectangle("fill", river.x, river.y, river.w, river.h)
+	for y=0, SCREEN_HEIGHT, images.tree:getHeight() do
+		love.graphics.draw(images.water, laneSpacing*6, y)
+	end
 	love.graphics.setColor(150, 100, 50)
-	love.graphics.rectangle("fill", bridge.x, bridge.y, bridge.w, bridge.h)
+	love.graphics.rectangle("fill", bridge.x, bridge.y, 128, bridge.h)
 	love.graphics.setColor(255, 255, 255)
 end
 
 function draw_treeLine()
 	love.graphics.setColor(255, 255, 255)
 	for y=0, SCREEN_HEIGHT/2, images.tree:getHeight() do
-		love.graphics.draw(images.tree, laneSpacing*3, y)
+		love.graphics.draw(images.tree, laneSpacing*4, y)
 	end
-	love.graphics.draw(images.tree, laneSpacing*3, SCREEN_HEIGHT-128)
+	love.graphics.draw(images.tree, laneSpacing*4, SCREEN_HEIGHT-128)
 	love.graphics.setColor(255, 255, 255)
 end

@@ -1,3 +1,6 @@
+SCREEN_WIDTH = love.graphics.getWidth()
+SCREEN_HEIGHT = love.graphics.getHeight()
+
 function level2_load_images()
 	images = {}
 	images.background = love.graphics.newImage("assets/images/ground.png")
@@ -12,22 +15,28 @@ function level2_load_images()
 	images.harle = love.graphics.newImage("assets/images/harle.png")
 	images.andrew = love.graphics.newImage("assets/images/andrew.png")
 	images.tree = love.graphics.newImage("assets/images/trees.png")
+	images.water = love.graphics.newImage("assets/images/water.png")
 
 	return images
 end
 
 function level2_load_lanes()
-	lane1 = {timerMax = 5, timer = 0, speed = -300, x = laneSpacing, image = images.andrew}
+	lane1 = {timerMax = 5, timer = 0, speed = -300, x = laneSpacing*2, image = images.andrew}
 	lane1.obstacles = {}
-	lane2 = {timerMax = 6, timer = 0, speed = 300, x = laneSpacing*2, image = images.harle}
+	lane2 = {timerMax = 6, timer = 0, speed = 300, x = laneSpacing*3, image = images.harle}
 	lane2.obstacles = {}
-	lane3 = {timerMax = 4, timer = 0, speed = -100, x = laneSpacing*4, image = images.larry}
+	lane3 = {timerMax = 4, timer = 0, speed = 100, x = laneSpacing*5, image = images.larry}
 	lane3.obstacles = {}
-	lane4 = {timerMax = 5, timer = 0, speed = 100, x = laneSpacing*6, image = images.john}
+	lane4 = {timerMax = 5, timer = 0, speed = 100, x = laneSpacing*7, image = images.john}
 	lane4.obstacles = {}
-	lane5 = {timerMax = 4, timer = 0, speed = -75, x = laneSpacing*7, image = images.marcelo}
+	lane5 = {timerMax = 4, timer = 0, speed = -75, x = laneSpacing*8, image = images.marcelo}
 	lane5.obstacles = {}
 	lanes = {lane1, lane2, lane3, lane4, lane5}
 
 	return lanes
+end
+
+function level2_load_player_goal()
+	player = {x = 10, y = SCREEN_HEIGHT/2-64, w = 120, h = 120}
+	goal = {x = SCREEN_WIDTH - 150, y = SCREEN_HEIGHT/2 - 100, w = 100, h = 100}
 end
