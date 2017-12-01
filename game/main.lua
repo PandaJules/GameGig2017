@@ -47,6 +47,9 @@ function love.load()
 
 	-- bridge properties
 	bridge = { w = 80, h = 150, y = SCREEN_HEIGHT/4, x = laneSpacing*4}
+
+	-- treeLine properties
+	treeLine = { w = 80, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*2.5}
 end
 
 
@@ -90,8 +93,8 @@ function reset_player_position()
 end
 
 function update_lanes(dt)
-	for lane in lanes
-		lane.time = lane.timer - dt
+	for i, lane in ipairs(lanes) do
+		lane.timer = lane.timer - dt
 		addnew = false
 		if lane.timer < 0 then
 			addnew = true
@@ -120,6 +123,7 @@ end
 function love.draw()
 	draw_background()
 	draw_river()
+	draw_treeLine()
 	draw_player() 
 	love.graphics.draw(images.goal, goal.x, goal.y)
 	draw_lanes()
@@ -150,7 +154,7 @@ function draw_player()
 end
 
 function draw_lanes()
-	for lane in lanes
+	for i, lane in ipairs(lanes) do
 		draw_lane(lane)
 	end
 end
@@ -160,5 +164,11 @@ function draw_river()
 	love.graphics.rectangle("fill", river.x, river.y, river.w, river.h)
 	love.graphics.setColor(150, 100, 50)
 	love.graphics.rectangle("fill", bridge.x, bridge.y, bridge.w, bridge.h)
+	love.graphics.setColor(255, 255, 255)
+end
+
+function draw_treeLine()
+	love.graphics.setColor(0, 100, 0)
+	love.graphics.rectangle("fill", treeLine.x, treeLine.y, treeLine.w, treeLine.h)
 	love.graphics.setColor(255, 255, 255)
 end
