@@ -17,7 +17,7 @@ function level1_load_images()
 end
 
 function level1_load_lanes()
-	lane1 = {timerMax = 2, timer = 0, speed = 300, x = laneSpacing, image = images.truck}
+	lane1 = {timerMax = 3, timer = 0, speed = 300, x = laneSpacing, image = images.truck}
 	lane1.obstacles = {}
 	lane2 = {timerMax = 3, timer = 0, speed = -300, x = laneSpacing*2, image = images.car}
 	lane2.obstacles = {}
