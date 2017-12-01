@@ -10,12 +10,14 @@ function level2_load_images()
 	images.john = love.graphics.newImage("assets/images/john.png")
 	images.larry = love.graphics.newImage("assets/images/larry.png")
 	images.harle = love.graphics.newImage("assets/images/harle.png")
+	images.andrew = love.graphics.newImage("assets/images/andrew.png")
+	images.tree = love.graphics.newImage("assets/images/trees.png")
 
 	return images
 end
 
 function level2_load_lanes()
-	lane1 = {timerMax = 5, timer = 0, speed = -300, x = laneSpacing, image = images.harle}
+	lane1 = {timerMax = 5, timer = 0, speed = -300, x = laneSpacing, image = images.andrew}
 	lane1.obstacles = {}
 	lane2 = {timerMax = 6, timer = 0, speed = 300, x = laneSpacing*2, image = images.harle}
 	lane2.obstacles = {}
