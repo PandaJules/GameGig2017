@@ -1,17 +1,26 @@
 require "collision"
 
+-- GLOBALS --
+
+SCREEN_WIDTH = love.graphics.getWidth()
+SCREEN_HEIGHT = love.graphics.getHeight()
+
+
 
 function love.load()
 	math.randomseed(os.time())
 
 	player = {}
-	player.x = 500
-	player.y = 300
-	player.w = 100
-	player.h = 100
+	player.x = SCREEN_WIDTH - 150
+	player.y = SCREEN_HEIGHT/2 - 64
+	player.w = 128
+	player.h = 128
 
 	coins = {}
 	
+	goal = {}
+	goal.x = 50
+	goal.y = SCREEN_HEIGHT/2
 	lives = 5
 
 	sounds = {}
@@ -23,7 +32,7 @@ function love.load()
 
 	images = {}
 	images.background = love.graphics.newImage("assets/images/ground.png")
-	--images.coin = love.graphics.newImage("assets/images/coin.png")
+	images.goal = love.graphics.newImage("assets/images/coin.png")
 	images.player_down = love.graphics.newImage("assets/images/player_down.png")
 	images.player_right = love.graphics.newImage("assets/images/player_right.png")
 	images.player_left = love.graphics.newImage("assets/images/player_left.png")
@@ -40,7 +49,7 @@ end
 function move_player(dt)
 	local SPEED = 500
 	if love.keyboard.isDown("right") then 
-		player.x = math.min(love.graphics.getWidth()-images.player_down:getWidth(), player.x + dt * SPEED)
+		player.x = math.min(SCREEN_WIDTH-images.player_down:getWidth(), player.x + dt * SPEED)
 		player.direction = "right"
 	elseif love.keyboard.isDown("left") then
 		player.x = math.max(0, player.x - dt * SPEED)
@@ -49,7 +58,7 @@ function move_player(dt)
 		player.y = math.max(0, player.y - dt * SPEED)
 		player.direction = "up"
 	elseif love.keyboard.isDown("down") then
-		player.y = math.min(love.graphics.getHeight()-images.player_down:getWidth(), player.y + dt * SPEED)
+		player.y = math.min(SCREEN_HEIGHT-images.player_down:getWidth(), player.y + dt * SPEED)
 		player.direction = "down"
 	end 
 
@@ -76,8 +85,8 @@ end
 
 
 function love.draw()
-	for x=0, love.graphics.getWidth(), images.background:getWidth() do
-		for y=0, love.graphics.getHeight(), images.background:getHeight() do
+	for x=0, SCREEN_WIDTH, images.background:getWidth() do
+		for y=0, SCREEN_HEIGHT, images.background:getHeight() do
 			love.graphics.draw(images.background, x, y)
 		end
 	end
@@ -97,11 +106,13 @@ function love.draw()
 	elseif player.direction == "down" then
 			img = images.player_down
 	else
-			img = images.player_right
+			img = images.player_left
 	end
 
 	love.graphics.draw(img, player.x, player.y)
 	love.graphics.setFont(fonts.large)
 	love.graphics.print("LIVES: " .. lives, 10, 10) 
+
+	love.graphics.draw(images.goal, goal.x, goal.y)
 
 end
