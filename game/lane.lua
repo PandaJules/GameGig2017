@@ -7,7 +7,7 @@ function update_lane(dt, lane, addnew)
 		thing.h = 100
 		thing.x = lane.x
 		if lane.speed > 0 then
-			thing.y = 0
+			thing.y = -200
 		else
 			thing.y = love.graphics.getHeight()
 		end

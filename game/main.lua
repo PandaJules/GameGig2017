@@ -130,14 +130,34 @@ function check_collision()
 			player.y = bridge.y + bridge.h - player.h
 		end
 	elseif AABB(player.x, player.y, player.w, player.h, river.x, river.y, river.w-50, river.h) then
-	    -- the player has fallen into the river
-	    reset_player_position(LEVEL)
-	    if lives>0 then 
-			lives = lives - 1
-		else 
-			love.window.showMessageBox("FAILURE", "You died! Watch the traffic in your next life", "info")
-			lives = 5
-			reset_player_position(LEVEL)
+		if LEVEL ~= 2 then
+	    	 -- the player has fallen into the river
+	    	reset_player_position(LEVEL)
+		    if lives>0 then 
+				lives = lives - 1
+			else 
+				love.window.showMessageBox("FAILURE", "You died! Watch the traffic in your next line", "info")
+				lives = 5
+				reset_player_position(LEVEL)
+			end
+		else
+			-- colliding with tables
+			if AABB(player.x, player.y, player.w, player.h, river.x, river.y, river.w, river.h) then
+				-- are we closer to the left or the right
+				if player.direction == "left" then
+					-- closer to the right
+					player.x = river.x + river.w
+				elseif player.direction == "right" then
+					-- closer to the left
+					player.x = river.x - player.w
+				elseif player.y < river.y + river.h then
+					-- closer to the bottom
+					player.y = river.y + river.h
+				elseif player.y + player.h > river.y then
+					-- closer to the top
+					player.y = river.y - player.h
+				end
+			end
 		end
 	end
 
@@ -187,10 +207,10 @@ function check_collision()
 	for i, treeLine in ipairs(treeLines) do
 		if AABB(player.x, player.y, player.w, player.h, treeLine.x, treeLine.y, treeLine.w, treeLine.h) then
 			-- are we closer to the left or the right
-			if player.x < treeLine.x + treeLine.w then
+			if player.direction == "left" then
 				-- closer to the right
 				player.x = treeLine.x + treeLine.w
-			elseif player.x > treeLine.x - player.w then
+			elseif player.direction == "right" then
 				-- closer to the left
 				player.x = treeLine.x - player.w
 			elseif player.y < treeLine.y + treeLine.h then
