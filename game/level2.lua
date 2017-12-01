@@ -16,7 +16,7 @@ function level2_load_images()
 	images.andrew = love.graphics.newImage("assets/images/andrew.png")
 	images.tree = love.graphics.newImage("assets/images/trees.png")
 	images.stone = love.graphics.newImage("assets/images/stone.png")
-	images.water = love.graphics.newImage("assets/images/water.png")
+	images.water = love.graphics.newImage("assets/images/tables.png")
 
 	return images
 end

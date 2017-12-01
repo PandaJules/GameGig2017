@@ -214,9 +214,11 @@ function draw_background()
 		end
 	end
 	
-	for x=laneSpacing*2, laneSpacing*3, 128 do
-		for y=0, SCREEN_HEIGHT, 128 do
-			love.graphics.draw(images.road, x, y)
+	if LEVEL == 1 then
+		for x=laneSpacing*2, laneSpacing*3, 128 do
+			for y=0, SCREEN_HEIGHT, 128 do
+				love.graphics.draw(images.road, x, y)
+			end
 		end
 	end
 
@@ -261,8 +263,12 @@ function draw_river()
 	for y=0, SCREEN_HEIGHT, images.tree:getHeight() do
 		love.graphics.draw(images.water, laneSpacing*6, y)
 	end
-	love.graphics.setColor(150, 100, 50)
-	love.graphics.rectangle("fill", bridge.x, bridge.y, 128, bridge.h)
+	if LEVEL == 1 then
+		love.graphics.setColor(150, 100, 50)
+	elseif LEVEL == 2 then
+		love.graphics.setColor(130, 155, 157)
+	end
+		love.graphics.rectangle("fill", bridge.x, bridge.y, 128, bridge.h)
 	love.graphics.setColor(255, 255, 255)
 end
 
