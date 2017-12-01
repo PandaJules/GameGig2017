@@ -71,6 +71,10 @@ function love.load()
 	lane3 = {}
 	lane4 = {}
 	lane5 = {}
+
+	-- river properties
+	river1 = { w = 80, h = SCREEN_HEIGHT/4, y = 0, x = laneSpacing*4}
+	river2 = { w = 80, h = 3*SCREEN_HEIGHT/4, y = SCREEN_HEIGHT/4 + 128, x = laneSpacing*4}
 end
 
 
@@ -191,6 +195,7 @@ function love.draw()
 	love.graphics.draw(images.goal, goal.x, goal.y)
 
 	draw_lanes()
+	draw_river()
 end
 
 function draw_lanes()
@@ -199,4 +204,10 @@ function draw_lanes()
 	draw_lane(lane3)
 	draw_lane(lane4)
 	draw_lane(lane5)
+end
+
+function draw_river()
+	love.graphics.setColor(30, 120, 180)
+	love.graphics.rectangle("fill", river1.x, river1.y, river1.w, river1.h)
+	love.graphics.rectangle("fill", river2.x, river2.y, river2.w, river2.h)
 end
