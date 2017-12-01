@@ -5,34 +5,8 @@ require "lane"
 
 SCREEN_WIDTH = love.graphics.getWidth()
 SCREEN_HEIGHT = love.graphics.getHeight()
-
--- Properties for each lane
 laneSpacing = love.graphics.getWidth()/8
 
-lane1TimerMax = 2
-lane1Timer = lane1TimerMax
-lane1Speed = 300
-lane1X = laneSpacing
-
-lane2TimerMax = 3
-lane2Timer = lane2TimerMax
-lane2Speed = -300
-lane2X = laneSpacing*2
-
-lane3TimerMax = 4
-lane3Timer = lane3TimerMax
-lane3Speed = 100
-lane3X = laneSpacing*3
-
-lane4TimerMax = 5
-lane4Timer = lane4TimerMax
-lane4Speed = -50
-lane4X = laneSpacing*5
-
-lane5TimerMax = 4
-lane5Timer = lane5TimerMax
-lane5Speed = 75
-lane5X = laneSpacing*6
 
 function love.load()
 	math.randomseed(os.time())
@@ -64,11 +38,16 @@ function love.load()
 	images.player_left = love.graphics.newImage("assets/images/bikeman_left.png")
 
 	-- empty lanes
-	lane1 = {}
-	lane2 = {}
-	lane3 = {}
-	lane4 = {}
-	lane5 = {}
+	lane1 = {timerMax = 2, timer = 0, speed = 300, x = laneSpacing}
+	lane1.obstacles = {}
+	lane2 = {timerMax = 3, timer = 0, speed = -300, x = laneSpacing*2}
+	lane2.obstacles = {}
+	lane3 = {timerMax = 4, timer = 0, speed = 100, x = laneSpacing*3}
+	lane3.obstacles = {}
+	lane4 = {timerMax = 5, timer = 0, speed = -50, x = laneSpacing*5}
+	lane4.obstacles = {}
+	lane5 = {timerMax = 4, timer = 0, speed = 75, x = laneSpacing*6}
+	lane5.obstacles = {}
 
 	-- river properties
 	river = { w = 80, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*4}
@@ -121,46 +100,46 @@ function move_player(dt)
 end
 
 function update_lanes(dt)
-	lane1Timer = lane1Timer - (1*dt)
-	lane2Timer = lane2Timer - (1*dt)
-	lane3Timer = lane3Timer - (1*dt)
-	lane4Timer = lane4Timer - (1*dt)
-	lane5Timer = lane5Timer - (1*dt)
+	lane1.timer = lane1.timer - (1*dt)
+	lane2.timer = lane2.timer - (1*dt)
+	lane3.timer = lane3.timer - (1*dt)
+	lane4.timer = lane4.timer - (1*dt)
+	lane5.timer = lane5.timer - (1*dt)
 
 	addnew = false
-	if lane1Timer < 0 then
+	if lane1.timer < 0 then
 		addnew = true
-		lane1Timer = lane1TimerMax
+		lane1.timer = lane1.timerMax
 	end
-	update_lane(dt, lane1, lane1Speed, lane1X, addnew)
+	update_lane(dt, lane1, addnew)
 
 	addnew = false
-	if lane2Timer < 0 then
+	if lane2.timer < 0 then
 		addnew = true
-		lane2Timer = lane2TimerMax
+		lane2.timer = lane2.timerMax
 	end
-	update_lane(dt, lane2, lane2Speed, lane2X, addnew)
+	update_lane(dt, lane2, addnew)
 
 	addnew = false
-	if lane3Timer < 0 then
+	if lane3.timer < 0 then
 		addnew = true
-		lane3Timer = lane3TimerMax
+		lane3.timer = lane3.timerMax
 	end
-	update_lane(dt, lane3, lane3Speed, lane3X, addnew)
+	update_lane(dt, lane3, addnew)
 
 	addnew = false
-	if lane4Timer < 0 then
+	if lane4.timer < 0 then
 		addnew = true
-		lane4Timer = lane4TimerMax
+		lane4.timer = lane4.timerMax
 	end
-	update_lane(dt, lane4, lane4Speed, lane4X, addnew)
+	update_lane(dt, lane4, addnew)
 
 	addnew = false
-	if lane5Timer < 0 then
+	if lane5.timer < 0 then
 		addnew = true
-		lane5Timer = lane5TimerMax
+		lane5.timer = lane5.timerMax
 	end
-	update_lane(dt, lane5, lane5Speed, lane5X, addnew)
+	update_lane(dt, lane5, addnew)
 end
 
 function collide_river()
