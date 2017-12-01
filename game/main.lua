@@ -21,15 +21,18 @@ function love.load()
 
 	sounds = {}
 	sounds.coin = love.audio.newSource("assets/sounds/coin.ogg", "static")
+	sounds.music = love.audio.newSource("assets/music/retro-bridge.wav", "static")
+	sounds.music:play()
 
 	fonts = {}
 	fonts.large = love.graphics.newFont("assets/fonts/Gamer.ttf", 80)
 
 
 	images = {}
+	images.background = love.graphics.newImage("assets/images/ground.png")
+	images.goal = love.graphics.newImage("assets/images/CL.png")
 	images.background = love.graphics.newImage("assets/images/brown_ground.png")
 	images.road = love.graphics.newImage("assets/images/road.png")
-	images.goal = love.graphics.newImage("assets/images/coin.png")
 	images.player_right = love.graphics.newImage("assets/images/bikeman_right.png")
 	images.player_left = love.graphics.newImage("assets/images/bikeman_left.png")
 	images.tourist = love.graphics.newImage("assets/images/tourist.png")
