@@ -5,7 +5,7 @@ require "lane"
 
 SCREEN_WIDTH = love.graphics.getWidth()
 SCREEN_HEIGHT = love.graphics.getHeight()
-laneSpacing = love.graphics.getWidth()/8
+laneSpacing = love.graphics.getWidth()/9
 
 
 function love.load()
@@ -31,25 +31,35 @@ function love.load()
 	images.goal = love.graphics.newImage("assets/images/coin.png")
 	images.player_right = love.graphics.newImage("assets/images/bikeman_right.png")
 	images.player_left = love.graphics.newImage("assets/images/bikeman_left.png")
+	images.tourist = love.graphics.newImage("assets/images/tourist.png")
+	images.duck = love.graphics.newImage("assets/images/duck.png")
+	images.cow = love.graphics.newImage("assets/images/cow_down.png")
+	images.car = love.graphics.newImage("assets/images/car_up.png")
+	images.truck = love.graphics.newImage("assets/images/truck_down.png")
 
 	-- empty lanes
-	lane1 = {timerMax = 2, timer = 0, speed = 300, x = laneSpacing}
+	lane1 = {timerMax = 2, timer = 0, speed = 300, x = laneSpacing, image = images.truck}
 	lane1.obstacles = {}
-	lane2 = {timerMax = 3, timer = 0, speed = -300, x = laneSpacing*2}
+	lane2 = {timerMax = 3, timer = 0, speed = -300, x = laneSpacing*2, image = images.car}
 	lane2.obstacles = {}
-	lane3 = {timerMax = 4, timer = 0, speed = 100, x = laneSpacing*3}
+	lane3 = {timerMax = 4, timer = 0, speed = 100, x = laneSpacing*4, image = images.cow}
 	lane3.obstacles = {}
-	lane4 = {timerMax = 5, timer = 0, speed = -50, x = laneSpacing*5}
+	lane4 = {timerMax = 5, timer = 0, speed = -50, x = laneSpacing*6, image = images.duck}
 	lane4.obstacles = {}
-	lane5 = {timerMax = 4, timer = 0, speed = 75, x = laneSpacing*6}
+	lane5 = {timerMax = 4, timer = 0, speed = 75, x = laneSpacing*7, image = images.tourist}
 	lane5.obstacles = {}
 	lanes = {lane1, lane2, lane3, lane4, lane5}
 
 	-- river properties
-	river = { w = 80, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*4}
+	river = { w = 100, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*5}
 
 	-- bridge properties
-	bridge = { w = 80, h = 150, y = SCREEN_HEIGHT/4, x = laneSpacing*4}
+	bridge = { w = 100, h = 150, y = SCREEN_HEIGHT/4, x = laneSpacing*5}
+
+	-- treeLine properties
+	treeLine1 = { w = 100, h = 3*SCREEN_HEIGHT/4 - 100, y = 0, x = laneSpacing*3}
+	treeLine2 = { w = 100, h = SCREEN_HEIGHT/4 , y = 3*SCREEN_HEIGHT/4 + 100, x = laneSpacing*3}
+	treeLines = {treeLine1, treeLine2}
 end
 
 
@@ -129,19 +139,49 @@ function check_collision()
 		end
 	end
 
+
+	for i, treeLine in ipairs(treeLines) do
+		if AABB(player.x, player.y, player.w, player.h, treeLine.x, treeLine.y, treeLine.w, treeLine.h) then
+			-- are we closer to the left or the right
+			local xdifference = (treeLine.x + treeLine.w) - player.x
+			debug = xdifference
+			if xdifference < 20 then
+				-- closer to the right
+				player.x = treeLine.x + treeLine.w
+			elseif xdifference > 150 then
+				-- closer to the left
+				player.x = treeLine.x - player.w
+			end
+
+			local ydifference = player.y - (treeLine.y + treeLine.h)
+			debug = ydifference
+			if ydifference > -30 then
+				-- closer to the bottom
+				player.y = treeLine.y + treeLine.h
+			elseif ydifference < -260 then
+				-- closer to the top
+				player.y = treeLine.y - player.h
+			end
+		end
+	end
+
+
 	invincible = hit_time<1
 
 end
 
+
 function love.draw()
 	draw_background()
 	draw_river()
+	draw_treeLine()
 	draw_player() 
 	love.graphics.draw(images.goal, goal.x, goal.y)
 	draw_lanes()
 
 	love.graphics.setFont(fonts.large)
 	love.graphics.print("LIVES: " .. lives, 10, 10)
+	-- love.graphics.print("DEBUG: " .. debug, 10, 30)
 end
 
 function draw_background()
@@ -178,5 +218,12 @@ function draw_river()
 	love.graphics.rectangle("fill", river.x, river.y, river.w, river.h)
 	love.graphics.setColor(150, 100, 50)
 	love.graphics.rectangle("fill", bridge.x, bridge.y, bridge.w, bridge.h)
+	love.graphics.setColor(255, 255, 255)
+end
+
+function draw_treeLine()
+	love.graphics.setColor(0, 100, 0)
+	love.graphics.rectangle("fill", treeLine1.x, treeLine1.y, treeLine1.w, treeLine1.h)
+	love.graphics.rectangle("fill", treeLine2.x, treeLine2.y, treeLine2.w, treeLine2.h)
 	love.graphics.setColor(255, 255, 255)
 end
