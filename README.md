@@ -1,5 +1,5 @@
-#GameGig2017
-#Retro-bridge
+# GameGig2017
+# Retro-bridge
 Anyone who goes to Cambridge knows that cycling is actually very difficult, with those pesky tourists stepping out in front of you! Try and make it to the Computer Lab, hand in your supervision work (whilst avoiding various lecturers) and then make the journey back home to bed!
 
 First get LÖVE:
