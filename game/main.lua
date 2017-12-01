@@ -2,6 +2,7 @@ require "collision"
 require "lane"
 require "level1"
 require "level2"
+require "level3"
 
 -- GLOBALS --
 
@@ -31,7 +32,7 @@ function love.load()
 	fonts.large = love.graphics.newFont("assets/fonts/Gamer.ttf", 90)
 	fonts.huge = love.graphics.newFont("assets/fonts/Gamer.ttf", 160)
 
-	river = { w = 125, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*6}
+	river = { w = 120, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*6}
 	bridge = { w = 125, h = 150, y = SCREEN_HEIGHT/6, x = laneSpacing*6}
 
 	treeLine1 = { w = 128, h = 128*4, y = 0, x = laneSpacing*4}
@@ -51,6 +52,11 @@ function love.update(dt)
 			images = level2_load_images()
 			lanes = level2_load_lanes()
 			level2_load_player_goal()
+			levelLoaded = true
+		elseif LEVEL == 3 then
+			images = level3_load_images()
+			lanes = level3_load_lanes()
+			level3_load_player_goal()
 			levelLoaded = true
 		end
 	end
@@ -88,10 +94,10 @@ function move_player(dt)
 end
 
 function reset_player_position(level)
-	if level == 1 then
+	if level == 1 or level==3 then
 		player.x = SCREEN_WIDTH - 150
 		player.y = SCREEN_HEIGHT/2 - 64
-	elseif level ==2 then 
+	elseif level ==2 or level == 4 then 
 		player.x = 10
 		player.y = SCREEN_HEIGHT/2-64
 	end
@@ -132,14 +138,17 @@ function check_collision()
 
 	if AABB(player.x, player.y, player.w, player.h, goal.x, goal.y, goal.w/2, goal.h/2) then
 		-- the player has reached the goal
-		love.window.showMessageBox("Succes", "You've reached the CL!", "info")		
 		-- progress to the next level
 		if LEVEL == 1 then
+			love.window.showMessageBox("Succes", "You've reached the CL!", "info")
 			LEVEL = 2
 			levelLoaded = false
 			lives = 5
-		else
+		elseif LEVEL == 2 then
 			love.window.showMessageBox("Succes", "You've have submitted your supervision!", "info")
+			LEVEL = 3
+			levelLoaded = false
+			lives = 5
 		end
 	end
 	
@@ -237,9 +246,9 @@ end
 
 function draw_player(level)
 	local img = images.player_left
-	if level == 1 then 
+	if level == 1 or level == 3 then 
 		img = images.player_left
-	elseif level == 2 then
+	elseif level == 2 or level == 4 then
 		img = images.player_right
 	end
 	if player.direction == "right" then
@@ -277,6 +286,7 @@ function draw_treeLine()
 	for y=0, SCREEN_HEIGHT/2, images.tree:getHeight() do
 		love.graphics.draw(images.tree, laneSpacing*4, y)
 	end
+	love.graphics.draw(love.graphics.newImage("assets/images/brown_ground.png"), laneSpacing*4, SCREEN_HEIGHT-256)
 	love.graphics.draw(images.tree, laneSpacing*4, SCREEN_HEIGHT-128)
 	love.graphics.setColor(255, 255, 255)
 end
