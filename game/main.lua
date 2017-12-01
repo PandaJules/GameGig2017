@@ -1,11 +1,16 @@
 require "collision"
 require "lane"
+require "level1"
+require "level2"
 
 -- GLOBALS --
 
 SCREEN_WIDTH = love.graphics.getWidth()
 SCREEN_HEIGHT = love.graphics.getHeight()
 laneSpacing = love.graphics.getWidth()/9
+
+LEVEL = 1 -- the level we're on
+levelLoaded = false
 
 
 function love.load()
@@ -26,33 +31,6 @@ function love.load()
 	fonts = {}
 	fonts.large = love.graphics.newFont("assets/fonts/Gamer.ttf", 80)
 
-
-	images = {}
-	images.background = love.graphics.newImage("assets/images/ground.png")
-	images.goal = love.graphics.newImage("assets/images/CL.png")
-	images.background = love.graphics.newImage("assets/images/brown_ground.png")
-	images.road = love.graphics.newImage("assets/images/road.png")
-	images.player_right = love.graphics.newImage("assets/images/bikeman_right.png")
-	images.player_left = love.graphics.newImage("assets/images/bikeman_left.png")
-	images.tourist = love.graphics.newImage("assets/images/tourist.png")
-	images.duck = love.graphics.newImage("assets/images/duck.png")
-	images.cow = love.graphics.newImage("assets/images/cow_down.png")
-	images.car = love.graphics.newImage("assets/images/car_up.png")
-	images.truck = love.graphics.newImage("assets/images/truck_down.png")
-
-	-- empty lanes
-	lane1 = {timerMax = 2, timer = 0, speed = 300, x = laneSpacing, image = images.truck}
-	lane1.obstacles = {}
-	lane2 = {timerMax = 3, timer = 0, speed = -300, x = laneSpacing*2, image = images.car}
-	lane2.obstacles = {}
-	lane3 = {timerMax = 4, timer = 0, speed = 100, x = laneSpacing*4, image = images.cow}
-	lane3.obstacles = {}
-	lane4 = {timerMax = 5, timer = 0, speed = -50, x = laneSpacing*6, image = images.duck}
-	lane4.obstacles = {}
-	lane5 = {timerMax = 4, timer = 0, speed = 75, x = laneSpacing*7, image = images.tourist}
-	lane5.obstacles = {}
-	lanes = {lane1, lane2, lane3, lane4, lane5}
-
 	-- river properties
 	river = { w = 100, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*5}
 
@@ -67,6 +45,17 @@ end
 
 
 function love.update(dt)
+	if levelLoaded == false then
+		if LEVEL == 1 then
+			images = level1_load_images()
+			lanes = level1_load_lanes()
+		elseif LEVEL == 2 then
+			images = level2_load_images()
+			lanes = level2_load_lanes()
+		end
+		levelLoaded = true
+	end
+
 	move_player(dt)
 	update_lanes(dt)
 	check_collision(dt)
@@ -126,6 +115,13 @@ function check_collision()
 		-- the player has reached the goal
 		love.window.showMessageBox("Succes", "You've reached the goal!", "info")
 		reset_player_position()
+		
+		-- progress to the next level
+		if LEVEL == 1 then
+			LEVEL = 2
+			levelLoaded = false
+			lives = 5
+		end
 	end
 	
 	for i, lane in ipairs(lanes) do
