@@ -170,7 +170,7 @@ function check_collision()
 			levelLoaded = false
 			lives = 5
 		elseif LEVEL == 2 then
-			love.window.showMessageBox("Success", "You've have submitted your supervision!", "info")
+			love.window.showMessageBox("Success", "You have submitted your supervision work!", "info")
 			LEVEL = 3
 			levelLoaded = false
 			lives = 5
