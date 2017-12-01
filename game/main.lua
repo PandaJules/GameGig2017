@@ -5,7 +5,7 @@ require "lane"
 
 SCREEN_WIDTH = love.graphics.getWidth()
 SCREEN_HEIGHT = love.graphics.getHeight()
-laneSpacing = love.graphics.getWidth()/8
+laneSpacing = love.graphics.getWidth()/9
 
 
 function love.load()
@@ -34,22 +34,24 @@ function love.load()
 	lane1.obstacles = {}
 	lane2 = {timerMax = 3, timer = 0, speed = -300, x = laneSpacing*2}
 	lane2.obstacles = {}
-	lane3 = {timerMax = 4, timer = 0, speed = 100, x = laneSpacing*3}
+	lane3 = {timerMax = 4, timer = 0, speed = 100, x = laneSpacing*4}
 	lane3.obstacles = {}
-	lane4 = {timerMax = 5, timer = 0, speed = -50, x = laneSpacing*5}
+	lane4 = {timerMax = 5, timer = 0, speed = -50, x = laneSpacing*6}
 	lane4.obstacles = {}
-	lane5 = {timerMax = 4, timer = 0, speed = 75, x = laneSpacing*6}
+	lane5 = {timerMax = 4, timer = 0, speed = 75, x = laneSpacing*7}
 	lane5.obstacles = {}
 	lanes = {lane1, lane2, lane3, lane4, lane5}
 
 	-- river properties
-	river = { w = 80, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*4}
+	river = { w = 100, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*5}
 
 	-- bridge properties
-	bridge = { w = 80, h = 150, y = SCREEN_HEIGHT/4, x = laneSpacing*4}
+	bridge = { w = 100, h = 150, y = SCREEN_HEIGHT/4, x = laneSpacing*5}
 
 	-- treeLine properties
-	treeLine = { w = 80, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*2.5}
+	treeLine1 = { w = 100, h = 3*SCREEN_HEIGHT/4 - 100, y = 0, x = laneSpacing*3}
+	treeLine2 = { w = 100, h = SCREEN_HEIGHT/4 , y = 3*SCREEN_HEIGHT/4 + 100, x = laneSpacing*3}
+	treeLines = {treeLine1, treeLine2}
 end
 
 
@@ -57,6 +59,7 @@ function love.update(dt)
 	move_player(dt)
 	update_lanes(dt)
 	collide_river(dt)
+	collide_treeLine(dt)
 end
 
 function move_player(dt)
@@ -104,19 +107,44 @@ function update_lanes(dt)
 	end
 end
 
-function collide_river()
+function collide_river(dt)
 	if AABB(player.x, player.y, player.w, player.h, bridge.x, bridge.y, bridge.w, bridge.h) then
 		-- stop the player from falling off of the bridge
 		if player.y < bridge.y then
 			player.y = bridge.y
 		elseif (player.y + player.h) > (bridge.y + bridge.h) then
 			player.y = bridge.y + bridge.h - player.h
-		else
-			player.y = player.y
 		end
 	elseif AABB(player.x, player.y, player.w, player.h, river.x, river.y, river.w, river.h) then
 	    -- the player has fallen into the river
 	    reset_player_position()
+	end
+end
+
+function collide_treeLine(dt)
+	for i, treeLine in ipairs(treeLines) do
+		if AABB(player.x, player.y, player.w, player.h, treeLine.x, treeLine.y, treeLine.w, treeLine.h) then
+			-- are we closer to the left or the right
+			local xdifference = (treeLine.x + treeLine.w) - player.x
+			debug = xdifference
+			if xdifference < 20 then
+				-- closer to the right
+				player.x = treeLine.x + treeLine.w
+			elseif xdifference > 150 then
+				-- closer to the left
+				player.x = treeLine.x - player.w
+			end
+
+			local ydifference = player.y - (treeLine.y + treeLine.h)
+			debug = ydifference
+			if ydifference > -30 then
+				-- closer to the bottom
+				player.y = treeLine.y + treeLine.h
+			elseif ydifference < -260 then
+				-- closer to the top
+				player.y = treeLine.y - player.h
+			end
+		end
 	end
 end
 
@@ -130,6 +158,7 @@ function love.draw()
 
 	love.graphics.setFont(fonts.large)
 	love.graphics.print("LIVES: " .. lives, 10, 10)
+	-- love.graphics.print("DEBUG: " .. debug, 10, 30)
 end
 
 function draw_background()
@@ -169,6 +198,7 @@ end
 
 function draw_treeLine()
 	love.graphics.setColor(0, 100, 0)
-	love.graphics.rectangle("fill", treeLine.x, treeLine.y, treeLine.w, treeLine.h)
+	love.graphics.rectangle("fill", treeLine1.x, treeLine1.y, treeLine1.w, treeLine1.h)
+	love.graphics.rectangle("fill", treeLine2.x, treeLine2.y, treeLine2.w, treeLine2.h)
 	love.graphics.setColor(255, 255, 255)
 end
