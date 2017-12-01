@@ -73,14 +73,17 @@ function love.load()
 	lane5 = {}
 
 	-- river properties
-	river1 = { w = 80, h = SCREEN_HEIGHT/4, y = 0, x = laneSpacing*4}
-	river2 = { w = 80, h = 3*SCREEN_HEIGHT/4, y = SCREEN_HEIGHT/4 + 128, x = laneSpacing*4}
+	river = { w = 80, h = SCREEN_HEIGHT, y = 0, x = laneSpacing*4}
+
+	-- bridge properties
+	bridge = { w = 80, h = 150, y = SCREEN_HEIGHT/4, x = laneSpacing*4}
 end
 
 
 function love.update(dt)
 	move_player(dt)
 	update_lanes(dt)
+	collide_river(dt)
 end
 
 function move_player(dt)
@@ -156,12 +159,18 @@ function update_lanes(dt)
 	update_lane(dt, lane5, lane5Speed, lane5X, addnew)
 end
 
+function collide_river()
+	-- if player.x > river1.x and (player.x - player.w) < river1.x + river1.w then
+
+	-- end
+end
+
 function love.draw()
 	draw_background()
+	draw_river()
 	draw_player() 
 	love.graphics.draw(images.goal, goal.x, goal.y)
 	draw_lanes()
-	draw_river()
 
 	love.graphics.setFont(fonts.large)
 	love.graphics.print("LIVES: " .. lives, 10, 10)
@@ -198,6 +207,8 @@ end
 
 function draw_river()
 	love.graphics.setColor(30, 120, 180)
-	love.graphics.rectangle("fill", river1.x, river1.y, river1.w, river1.h)
-	love.graphics.rectangle("fill", river2.x, river2.y, river2.w, river2.h)
+	love.graphics.rectangle("fill", river.x, river.y, river.w, river.h)
+	love.graphics.setColor(150, 100, 50)
+	love.graphics.rectangle("fill", bridge.x, bridge.y, bridge.w, bridge.h)
+	love.graphics.setColor(255, 255, 255)
 end
