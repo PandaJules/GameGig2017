@@ -195,12 +195,14 @@ function love.draw()
 end
 
 function draw_background()
+	-- love.graphics.setColor(139, 181, 74)
 	for x=0, SCREEN_WIDTH, images.background:getWidth() do
 		for y=0, SCREEN_HEIGHT, images.background:getHeight() do
 			love.graphics.draw(images.background, x, y)
 		end
 	end
-
+	-- love.graphics.setColor(255, 255, 255)
+	
 	for x=128, 256, 128 do
 		for y=0, SCREEN_HEIGHT, 128 do
 			love.graphics.draw(images.road, x, y)
