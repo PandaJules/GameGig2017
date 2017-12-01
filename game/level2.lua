@@ -29,7 +29,7 @@ function level2_load_lanes()
 	lane1.obstacles = {}
 	lane2 = {timerMax = 6, timer = 0, speed = 300, x = laneSpacing*3, image = images.harle}
 	lane2.obstacles = {}
-	lane3 = {timerMax = 4, timer = 0, speed = -100, x = laneSpacing*5, image = images.larry}
+	lane3 = {timerMax = 5, timer = 0, speed = -100, x = laneSpacing*5, image = images.larry}
 	lane3.obstacles = {}
 	lane4 = {timerMax = 5, timer = 0, speed = 100, x = laneSpacing*7, image = images.john}
 	lane4.obstacles = {}
@@ -41,6 +41,6 @@ function level2_load_lanes()
 end
 
 function level2_load_player_goal()
-	player = {x = 10, y = SCREEN_HEIGHT/2-64, w = 120, h = 120}
-	goal = {x = SCREEN_WIDTH - 150, y = SCREEN_HEIGHT/2 - 100, w = 100, h = 100}
+	player = {x = 10, y = SCREEN_HEIGHT/2-64, w = 100, h = 100}
+	goal = {x = SCREEN_WIDTH - 150, y = SCREEN_HEIGHT/2 - 100, w = 40, h = 40}
 end
